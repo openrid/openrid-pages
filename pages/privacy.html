@@ -1,0 +1,161 @@
+<h1 class="fr-mb-2w">Tracking and privacy</h1>
+
+<div class="fr-callout">
+    <p class="fr-callout__text">
+        Welcome to our privacy overview! 🛡️<br>
+        Here you'll find insights into how we handle your data and prioritize your privacy. As seasoned navigators of
+        data protection regulations like GDPR, you're in familiar territory. Thank you for trusting us with your data.
+    </p>
+</div>
+
+<h2 class="fr-mt-4w">Purpose</h2>
+<p>
+    We collect aggregated data for statistical purposes on how our visitors use this website. This helps us
+    improve your user experience. The data we collect is not used for any other purpose than analytics.
+</p>
+
+<h2 class="fr-mt-4w">How we track</h2>
+
+<p class="text-justify">
+    We use a self-hosted instance of <a href="https://matomo.org">Matomo</a>, an
+    <a href="https://matomo.org/free-software/">open-source</a> tracking tool. We have configured Matomo with the goal
+    to protect your personal information as much as possible:
+</p>
+
+<div class="markdown">
+    <ul>
+        <li>We use cookieless tracking</li>
+        <li>Visitors aren't tracked across websites</li>
+        <li>A visitor cannot be tracked across days within the same website</li>
+        <li>Visitor's IP address is anonymized before being recorded</li>
+    </ul>
+</div>
+<p class="text-justify">
+It is therefore impossible to associate your visits to this site with your person.
+</p>
+
+<h2 class="fr-mt-4w">Opt-out of tracking</h2>
+
+<p class="text-justify">
+    You may still choose to prevent us from aggregating and analyzing the actions you take.
+    Unfortunately, this will also prevent us from learning from your actions and creating a better
+    experience for you and other users.
+</p>
+
+<div id="matomo-opt-out" style="font-size: 1rem; font-family: Montserrat; color: #000000; background-color: #fff; "></div>
+<script>
+    var settings = {"showIntro":false,"divId":"matomo-opt-out","useSecureCookies":true,"cookiePath":null,"cookieDomain":null,"cookieSameSite":"Lax","OptOutComplete":"Opt-out complete; your visits to this website will not be recorded by the Web Analytics tool.","OptOutCompleteBis":"Note that if you clear your cookies, delete the opt-out cookie, or if you change computers or Web browsers, you will need to perform the opt-out procedure again.","YouMayOptOut2":"You may choose to prevent this website from aggregating and analyzing the actions you take here.","YouMayOptOut3":"Doing so will protect your privacy, but will also prevent the owner from learning from your actions and creating a better experience for you and other users.","OptOutErrorNoCookies":"The tracking opt-out feature requires cookies to be enabled.","OptOutErrorNotHttps":"The tracking opt-out feature may not work because this site was not loaded over HTTPS. Please reload the page to check if your opt out status changed.","YouAreNotOptedOut":"You are not opted out.","UncheckToOptOut":"Uncheck this box to opt-out.","YouAreOptedOut":"You are currently opted out.","CheckToOptIn":"Check this box to opt-in."};
+    document.addEventListener('DOMContentLoaded', function() {
+        window.MatomoConsent.init(settings.useSecureCookies, settings.cookiePath, settings.cookieDomain, settings.cookieSameSite);
+        showContent(window.MatomoConsent.hasConsent());
+    });
+
+
+        function showContent(consent, errorMessage = null, useTracker = false) {
+
+            var errorBlock = '<p style="color: red; font-weight: bold;">';
+
+            var div = document.getElementById(settings.divId);
+            if (!div) {
+                const warningDiv = document.createElement("div");
+                var msg = 'Unable to find opt-out content div: "'+settings.divId+'"';
+                warningDiv.id = settings.divId+'-warning';
+                warningDiv.innerHTML = errorBlock+msg+'</p>';
+                document.body.insertBefore(warningDiv, document.body.firstChild);
+                console.log(msg);
+                return;
+            }
+
+            if (!navigator || !navigator.cookieEnabled) {
+                div.innerHTML = errorBlock+settings.OptOutErrorNoCookies+'</p>';
+                return;
+            }
+            if (location.protocol !== 'https:') {
+                div.innerHTML = errorBlock+settings.OptOutErrorNotHttps+'</p>';
+                return;
+            }
+            if (errorMessage !== null) {
+                div.innerHTML = errorBlock+errorMessage+'</p>';
+                return;
+            }
+            var content = '';
+            if (consent) {
+                if (settings.showIntro) {
+                    content += '<p>'+settings.YouMayOptOut2+' '+settings.YouMayOptOut3+'</p>';
+                }
+                if (useTracker) {
+                    content += '<input onclick="_paq.push([\'optUserOut\']);showContent(false, null, true);" id="trackVisits" type="checkbox" checked="checked" />';
+                } else {
+                    content += '<input onclick="window.MatomoConsent.consentRevoked();showContent(false);" id="trackVisits" type="checkbox" checked="checked" />';
+                }
+                content += '<label for="trackVisits"><strong><span>'+' '+settings.YouAreNotOptedOut+' '+settings.UncheckToOptOut+'</span></strong></label>';
+            } else {
+                if (settings.showIntro) {
+                    content += '<p>'+settings.OptOutComplete+' '+settings.OptOutCompleteBis+'</p>';
+                }
+                if (useTracker) {
+                    content += '<input onclick="_paq.push([\'forgetUserOptOut\']);showContent(true, null, true);" id="trackVisits" type="checkbox" />';
+                } else {
+                    content += '<input onclick="window.MatomoConsent.consentGiven();showContent(true);" id="trackVisits" type="checkbox" />';
+                }
+                content += '<label for="trackVisits"><strong><span>'+' '+settings.YouAreOptedOut+' '+settings.CheckToOptIn+'</span></strong></label>';
+            }
+            div.innerHTML = content;
+        };
+
+        window.MatomoConsent = {
+            cookiesDisabled: (!navigator || !navigator.cookieEnabled),
+            CONSENT_COOKIE_NAME: 'mtm_consent', CONSENT_REMOVED_COOKIE_NAME: 'mtm_consent_removed',
+            cookieIsSecure: false, useSecureCookies: true, cookiePath: '', cookieDomain: '', cookieSameSite: 'Lax',
+            init: function(useSecureCookies, cookiePath, cookieDomain, cookieSameSite) {
+                this.useSecureCookies = useSecureCookies; this.cookiePath = cookiePath;
+                this.cookieDomain = cookieDomain; this.cookieSameSite = cookieSameSite;
+                if(useSecureCookies && location.protocol !== 'https:') {
+                    console.log('Error with setting useSecureCookies: You cannot use this option on http.');
+                } else {
+                    this.cookieIsSecure = useSecureCookies;
+                }
+            },
+            hasConsent: function() {
+                var consentCookie = this.getCookie(this.CONSENT_COOKIE_NAME);
+                var removedCookie = this.getCookie(this.CONSENT_REMOVED_COOKIE_NAME);
+                if (!consentCookie && !removedCookie) {
+                    return true; // No cookies set, so opted in
+                }
+                if (removedCookie && consentCookie) {
+                    this.setCookie(this.CONSENT_COOKIE_NAME, '', -129600000);
+                    return false;
+                }
+                return (consentCookie || consentCookie !== 0);
+            },
+            consentGiven: function() {
+                this.setCookie(this.CONSENT_REMOVED_COOKIE_NAME, '', -129600000);
+                this.setCookie(this.CONSENT_COOKIE_NAME, new Date().getTime(), 946080000000);
+            },
+            consentRevoked: function() {
+                this.setCookie(this.CONSENT_COOKIE_NAME, '', -129600000);
+                this.setCookie(this.CONSENT_REMOVED_COOKIE_NAME, new Date().getTime(), 946080000000);
+            },
+            getCookie: function(cookieName) {
+                var cookiePattern = new RegExp('(^|;)[ ]*' + cookieName + '=([^;]*)'), cookieMatch = cookiePattern.exec(document.cookie);
+                return cookieMatch ? window.decodeURIComponent(cookieMatch[2]) : 0;
+            },
+            setCookie: function(cookieName, value, msToExpire) {
+                var expiryDate = new Date();
+                expiryDate.setTime((new Date().getTime()) + msToExpire);
+                document.cookie = cookieName + '=' + window.encodeURIComponent(value) +
+                    (msToExpire ? ';expires=' + expiryDate.toGMTString() : '') +
+                    ';path=' + (this.cookiePath || '/') +
+                    (this.cookieDomain ? ';domain=' + this.cookieDomain : '') +
+                    (this.cookieIsSecure ? ';secure' : '') +
+                    ';SameSite=' + this.cookieSameSite;
+                if ((!msToExpire || msToExpire >= 0) && this.getCookie(cookieName) !== String(value)) {
+                    console.log('There was an error setting cookie `' + cookieName + '`. Please check domain and path.');
+                }
+            }
+        };
+</script>
+
+<p>If you have any questions or comments related to the use of personal data you may contact us at
+    <a href="mailto:privacy@openrid.co">privacy@openrid.co</a>.
+</p>
